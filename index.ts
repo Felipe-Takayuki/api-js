@@ -6,10 +6,18 @@ const port = 3000;
 
 let nextId =1;
 class User{
-  constructor(name) {
-    this.id = nextId++,
-    this.name = name
+  id:number
+  name:string
+  email: string
+  
+}
+
+function validarNomeUsuario(req, res, next) {
+  const { name } = req.body
+  if (!name || typeof name !=='string' || name.trim() === '') {
+    return res.status(400).json({erro: "O campo 'name' é obrigatório e deve ser uma string válida"})
   }
+  next()
 }
 const users = []
 
@@ -27,7 +35,8 @@ app.get('/user', (_, res) => {
    res.status(200).json(users)
 })
 
-app.post('/user', (req, res) => {
+app.post('/user',validarNomeUsuario,(req, res) => {
+
     const { name } = req.body
     if (!name) {
       return res.status(400).json({ erro: "Nome é obrigatório" })
@@ -38,5 +47,6 @@ app.post('/user', (req, res) => {
 })
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Example app listening on port http://localhost:${port}`)
 })
+
